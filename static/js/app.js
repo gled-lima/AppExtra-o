@@ -7,6 +7,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const salvarBtn = document.getElementById('salvarBtn');
     const preferenciaTable = document.getElementById('preferenciaTable');
     const semPreferencias = document.getElementById('semPreferencias');
+    const mapFrame = document.getElementById('mapFrame');
+    const limparBtn = document.getElementById('limparBtn');
+    
+    // Elementos de pesquisa
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
     
     // Modal de notificação
     const notificationModal = new bootstrap.Modal(document.getElementById('notificationModal'));
@@ -95,6 +101,11 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.status === 'success') {
                 mostrarNotificacao('Sucesso', 'Preferência salva com sucesso!');
                 carregarPreferencias(); // Atualizar a tabela
+                
+                // Atualizar o mapa com marcadores coloridos
+                if (data.mapa_url) {
+                    mapFrame.src = data.mapa_url + '?' + new Date().getTime(); // Evitar cache
+                }
             } else {
                 mostrarNotificacao('Erro', data.message || 'Erro ao salvar preferência.');
             }
@@ -172,6 +183,97 @@ document.addEventListener('DOMContentLoaded', function() {
         modalMessage.textContent = mensagem;
         notificationModal.show();
     }
+    
+    // Função para pesquisar endereços
+    function pesquisarEnderecos(termo) {
+        fetch('/pesquisar_enderecos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ termo_pesquisa: termo })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Atualizar o iframe do mapa com o novo mapa gerado
+            mapFrame.src = data.mapa_url + '?' + new Date().getTime(); // Adicionar timestamp para evitar cache
+            
+            // Mostrar quantidade de resultados ou mensagem se não encontrar
+            if (data.total_resultados === 0) {
+                mostrarNotificacao('Pesquisa', 'Nenhum endereço encontrado com o termo: ' + termo);
+            } else {
+                const mensagem = data.total_resultados === 1 ? 
+                    '1 endereço encontrado' : 
+                    `${data.total_resultados} endereços encontrados`;
+                
+                searchInput.placeholder = mensagem;
+                
+                // Resetar placeholder após 3 segundos
+                setTimeout(() => {
+                    searchInput.placeholder = 'Pesquisar endereço...';
+                }, 3000);
+            }
+        })
+        .catch(error => {
+            console.error('Erro ao pesquisar endereços:', error);
+            mostrarNotificacao('Erro', 'Ocorreu um erro ao pesquisar endereços.');
+        });
+    }
+    
+    // Event listener para o botão de pesquisa
+    searchButton.addEventListener('click', function() {
+        const termoPesquisa = searchInput.value.trim();
+        if (termoPesquisa) {
+            pesquisarEnderecos(termoPesquisa);
+        } else {
+            // Se o campo estiver vazio, recarregar todos os endereços
+            pesquisarEnderecos('');
+        }
+    });
+    
+    // Event listener para pesquisar ao pressionar Enter no campo de pesquisa
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            searchButton.click();
+        }
+    });
+    
+    // Event listener para o botão de limpar lista
+    limparBtn.addEventListener('click', function() {
+        // Confirmar com o usuário antes de limpar
+        if (confirm('Tem certeza que deseja limpar toda a lista de preferências? Esta ação não pode ser desfeita.')) {
+            fetch('/limpar_preferencias', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    mostrarNotificacao('Sucesso', data.message || 'Lista de preferências limpa com sucesso!');
+                    carregarPreferencias(); // Atualizar a tabela
+                    
+                    // Atualizar o mapa com marcadores atualizados
+                    if (data.mapa_url) {
+                        mapFrame.src = data.mapa_url + '?' + new Date().getTime(); // Evitar cache
+                    }
+                    
+                    // Limpar o formulário de preferência
+                    preferenciaForm.reset();
+                    salvarBtn.disabled = true;
+                } else {
+                    mostrarNotificacao('Erro', data.message || 'Erro ao limpar lista de preferências.');
+                }
+            })
+            .catch(error => {
+                console.error('Erro ao limpar preferências:', error);
+                mostrarNotificacao('Erro', 'Ocorreu um erro ao tentar limpar a lista de preferências.');
+            });
+        }
+    });
     
     // Carregar preferências ao iniciar
     carregarPreferencias();
