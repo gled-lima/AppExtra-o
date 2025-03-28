@@ -89,3 +89,36 @@
 .estrela-vazia {
     color: #ddd;
 }
+
+/* Estilo para a barra de pesquisa */
+.search-container {
+    position: relative;
+}
+
+.search-results {
+    position: absolute;
+    top: 40px;
+    right: 0;
+    width: 100%;
+    background-color: var(--bs-dark);
+    border: 1px solid var(--bs-border-color);
+    border-radius: 4px;
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.search-result-item {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--bs-border-color);
+    cursor: pointer;
+}
+
+.search-result-item:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.highlight-result {
+    color: var(--bs-info);
+    font-weight: bold;
+}
