@@ -1,14 +1,20 @@
-[project]
-name = "repl-nix-workspace"
+[tool.poetry]
+name = "mapa-preferencias"
 version = "0.1.0"
-description = "Add your description here"
-requires-python = ">=3.11"
-dependencies = [
-    "email-validator>=2.2.0",
-    "flask>=3.1.0",
-    "flask-sqlalchemy>=3.1.1",
-    "folium>=0.19.5",
-    "gunicorn>=23.0.0",
-    "pandas>=2.2.3",
-    "psycopg2-binary>=2.9.10",
-]
+description = "Aplicativo Flask com mapa interativo para visualizar endereços e atribuir preferências"
+authors = ["Desenvolvedor <dev@exemplo.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = ">=3.9,<4.0"
+email-validator = ">=2.2.0"
+flask = ">=3.1.0"
+flask-sqlalchemy = ">=3.1.1"
+folium = ">=0.19.5"
+gunicorn = ">=23.0.0"
+pandas = ">=2.2.3"
+psycopg2-binary = ">=2.9.10"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
