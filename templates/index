@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-br" data-bs-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mapa de Endereços e Preferências</title>
+    <!-- Bootstrap CSS (Replit Theme) -->
+    <link rel="stylesheet" href="https://cdn.replit.com/agent/bootstrap-agent-dark-theme.min.css">
+    <!-- Font Awesome icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-map-marked-alt me-2"></i>
+                Mapa de Preferências
+            </a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-map me-2"></i>Mapa Interativo</h5>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="map-container">
+                            <iframe src="{{ url_for('static', filename='mapa.html') }}" width="100%" height="500" frameborder="0"></iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-star me-2"></i>Definir Preferência</h5>
+                    </div>
+                    <div class="card-body">
+                        <form id="preferenciaForm">
+                            <div class="mb-3">
+                                <label for="cidadeField" class="form-label">Cidade</label>
+                                <input type="text" class="form-control" id="cidadeField" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="estadoField" class="form-label">Estado</label>
+                                <input type="text" class="form-control" id="estadoField" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="enderecoField" class="form-label">Endereço</label>
+                                <input type="text" class="form-control" id="enderecoField" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Preferência (1-5)</label>
+                                <div class="rating-container">
+                                    <div class="rating">
+                                        <input type="radio" id="star5" name="preferencia" value="5" /><label for="star5"><i class="fas fa-star"></i></label>
+                                        <input type="radio" id="star4" name="preferencia" value="4" /><label for="star4"><i class="fas fa-star"></i></label>
+                                        <input type="radio" id="star3" name="preferencia" value="3" /><label for="star3"><i class="fas fa-star"></i></label>
+                                        <input type="radio" id="star2" name="preferencia" value="2" /><label for="star2"><i class="fas fa-star"></i></label>
+                                        <input type="radio" id="star1" name="preferencia" value="1" /><label for="star1"><i class="fas fa-star"></i></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" id="salvarBtn" disabled>
+                                <i class="fas fa-save me-2"></i>Salvar Preferência
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-list me-2"></i>Preferências Salvas</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table table-hover" id="preferenciaTable">
+                                <thead>
+                                    <tr>
+                                        <th>Cidade</th>
+                                        <th>Endereço</th>
+                                        <th>Preferência</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Será preenchido via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div id="semPreferencias" class="text-center py-3">
+                            <i class="fas fa-info-circle me-2"></i>Nenhuma preferência salva ainda.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Notificação -->
+    <div class="modal fade" id="notificationModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalTitle">Notificação</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="modalMessage">
+                    <!-- Mensagem da notificação -->
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>
